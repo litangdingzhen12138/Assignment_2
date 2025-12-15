@@ -1,0 +1,24 @@
+# English profanity list example (no hate slurs)
+# one word/phrase per line; your matcher is substring-based (case-insensitive if you lower it)
+fuck
+fucking
+fuck you
+shit
+bullshit
+bitch
+asshole
+dick
+dickhead
+piss off
+bastard
+motherfucker
+son of a bitch
+wtf
+stfu
+damn
+goddamn
+crap
+jerk
+moron
+idiot
+screw you
