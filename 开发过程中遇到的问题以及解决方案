@@ -1,0 +1,25 @@
+问题 1：res 下面没有 layout 文件夹
+
+原因：工程是 Jetpack Compose 模板，默认不使用 XML 布局，所以不会自动生成 res/layout。
+解决：右键 res → New → Android Resource Directory → Resource type 选 layout，然后创建 activity_main.xml 并切换 MainActivity 使用 setContentView（或 ViewBinding）。
+
+问题 2：Media3 依赖报错 “requires compileSdk 35+”
+
+原因：androidx.media3:media3-*（例如 1.8.0）需要编译 SDK 版本 >= 35，而工程当时是 compileSdk=34。
+解决：在 app/build.gradle.kts 中把 compileSdk 提升到 35（或 36），并在 SDK Manager 安装对应 API。
+
+问题 3：App 一启动就闪退：You need to use a Theme.AppCompat theme
+
+原因：MainActivity 改成了 AppCompatActivity，但工程主题仍是 Compose/Material3 风格或非 AppCompat 主题，导致 AppCompat 控件初始化失败。
+解决：在 themes.xml / themes-night.xml 把 parent 改成
+Theme.MaterialComponents.DayNight.NoActionBar（或 Theme.AppCompat.DayNight.NoActionBar），并确认 Manifest 使用该主题。
+
+问题 4：播放几秒后闪退：CalledFromWrongThreadException
+
+原因：音频解码/识别在后台线程执行，但回调里直接更新 TextView（UI），违反 “只能主线程更新 UI”。
+解决：在 MainActivity 的 onUi 回调里用 runOnUiThread { ... } 包住 UI 更新（或在引擎内部用 Handler(Looper.getMainLooper()).post 切回主线程）。
+
+问题 5：转写里出现两次 “fuck”，但脏话统计只有 1 次
+
+原因：统计只对 final 识别结果累加（正确防止重复计数），但 UI 显示的是 final + partial，第二个 “fuck” 可能来自 partial（未最终确认），因此统计没加进去。
+解决：统计仍只累加 final；但 UI 显示时临时把 partial 的脏话计数叠加显示（不写入累计 map）。
